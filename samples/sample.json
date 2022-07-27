@@ -1,0 +1,28 @@
+{
+    "header": [
+        "a",
+        "b",
+        "c"
+    ],
+    "delimiter": ";",
+    "files": [
+        "./samples/s1.csv",
+        "./samples/s2.csv"
+    ],
+    "grafs": [
+        {
+            "title": "Teste 1",
+            "xlabel": "Label X",
+            "ylabel": "Label Y",
+            "d_y": 3,
+            "entries": [
+                {
+                    "field": "b",
+                    "opts": {
+                        "c": "blue"
+                    }
+                }
+            ]
+        }
+    ]
+}
