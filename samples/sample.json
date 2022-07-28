@@ -15,13 +15,16 @@
             "xlabel": "Label X",
             "ylabel": "Label Y",
             "xfield": "a",
-            "d_y": 3,
+            "kind": "norm",
             "entries": [
                 {
                     "field": "b",
                     "opts": {
-                        "c": "blue"
+                        "c": "green"
                     }
+                },
+                {
+                    "field": "c"
                 }
             ]
         }

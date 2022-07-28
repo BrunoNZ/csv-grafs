@@ -43,6 +43,9 @@ class MatPlot:
         if y_label is not None:
             self.a_x.set_ylabel(y_label)
 
+    def set_xticks(self, x_ticks):
+        self.a_x.set_xticks(x_ticks)
+
     def set_title(self, title):
         self.a_x.set_title(title)
 
@@ -83,20 +86,35 @@ class GrafPlots:
             self.plot_graf(graf)
 
     def plot_graf(self, graf):
-        v_x = self.get_vx(graf.get("xfield", False))
+        defs = self.get_graf_defs(graf)
         plot = MatPlot()
-        plot.set_title(graf.get("title", ""))
-        plot.set_labels(
-            x_label=graf.get("xlabel", ""),
-            y_label=graf.get("ylabel", "")
-        )
+        self.plot_basic_infos(defs, plot)
+
         for entry in graf.get("entries", []):
             name = entry.get("field")
-            for index, values in self.inputs.get_field_items(name):
+            opts = entry.get("opts", {})
+            matrix = self.inputs.get_field_items(name, defs["kind"])
+            for index, values in matrix:
                 label = name + ":" + str(index)
-                plot.add_simple_plot(v_x, values, label)
+                plot.add_simple_plot(defs["v_x"], values, label, **opts)
         plot.show()
         plot.close()
+
+    def get_graf_defs(self, graf):
+        defs = {}
+        defs.update({"kind": graf.get("kind", None)})
+        defs.update({"x_field": graf.get("xfield", False)})
+        defs.update({"v_x": self.get_vx(defs["x_field"])})
+        defs.update({"title": graf.get("title", "")})
+        defs.update({"x_label": graf.get("xlabel", "")})
+        defs.update({"y_label": graf.get("ylabel", "")})
+        return defs
+
+    def plot_basic_infos(self, defs, plot):
+        plot.set_title(defs["title"])
+        plot.set_labels(x_label=defs["x_label"], y_label=defs["y_label"])
+        if defs["x_field"]:
+            plot.set_xticks(defs["v_x"])
 
     def get_vx(self, x_field):
         if x_field:

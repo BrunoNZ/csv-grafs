@@ -83,8 +83,16 @@ class GrafInputs:
             avg.update({name: result})
         return avg
 
-    def get_field_values(self, name):
-        return self.values[name].values()
+    def get_field_values(self, name, kind=None):
+        return self.get_value_by_kind(kind)[name].values()
 
-    def get_field_items(self, name):
-        return self.values[name].items()
+    def get_field_items(self, name, kind=None):
+        return self.get_value_by_kind(kind)[name].items()
+
+    def get_value_by_kind(self, kind=None):
+        v_name = "values"
+        if kind == "norm":
+            v_name = "values_normalized"
+        elif kind == "avg":
+            v_name = "avg"
+        return getattr(self, v_name)
