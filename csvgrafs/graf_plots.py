@@ -101,5 +101,4 @@ class GrafPlots:
     def get_vx(self, x_field):
         if x_field:
             return list(self.inputs.get_field_values(x_field))[0]
-        else:
-            return range(0, self.inputs.d_x)
+        return range(0, self.inputs.d_x)
