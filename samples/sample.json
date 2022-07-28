@@ -14,6 +14,7 @@
             "title": "Teste 1",
             "xlabel": "Label X",
             "ylabel": "Label Y",
+            "xfield": "a",
             "d_y": 3,
             "entries": [
                 {

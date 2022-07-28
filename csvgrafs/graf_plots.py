@@ -83,6 +83,7 @@ class GrafPlots:
             self.plot_graf(graf)
 
     def plot_graf(self, graf):
+        v_x = self.get_vx(graf.get("xfield", False))
         plot = MatPlot()
         plot.set_title(graf.get("title", ""))
         plot.set_labels(
@@ -91,10 +92,14 @@ class GrafPlots:
         )
         for entry in graf.get("entries", []):
             name = entry.get("field")
-            for index, values in self.inputs.values.items():
-                v_y = values[name]
-                v_x = range(0, len(v_y))
+            for index, values in self.inputs.get_field_items(name):
                 label = name + ":" + str(index)
-                plot.add_simple_plot(v_x, v_y, label)
+                plot.add_simple_plot(v_x, values, label)
         plot.show()
         plot.close()
+
+    def get_vx(self, x_field):
+        if x_field:
+            return list(self.inputs.get_field_values(x_field))[0]
+        else:
+            return range(0, self.inputs.d_x)
