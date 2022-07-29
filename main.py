@@ -1,13 +1,13 @@
 #!/usr/bin/python3
 
 import sys
-from csvgrafs import graf_inputs as inputs
-from csvgrafs import graf_plots as plots
+from csvgrafs.graf_inputs import GrafInputs
+from csvgrafs.graf_plots import GrafPlots
 
 
 def main():
-    ginputs = inputs.GrafInputs(sys.argv[1:])
-    gplots = plots.GrafPlots(ginputs)
+    ginputs = GrafInputs(sys.argv[1:])
+    gplots = GrafPlots(ginputs)
     gplots.plot_all_grafs()
 
 

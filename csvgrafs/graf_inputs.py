@@ -8,13 +8,37 @@ import json
 import numpy as np
 
 
+class GrafDefs:
+
+    def __init__(self, graf):
+        self.kinds = graf.get("kinds", ["original"])
+        self.x_field = graf.get("xfield", False)
+        self.title = graf.get("title", "")
+        self.x_label = graf.get("xlabel", "")
+        self.y_label = graf.get("ylabel", "")
+        self.filename = graf.get("filename", None)
+        self.entries = graf.get("entries", {})
+        self.entries_names = list(map(lambda e: e.get("field"), self.entries))
+        self.legend_options = graf.get("legend_options", {})
+
+    def get_vx(self, ginput):
+        if self.x_field:
+            return list(ginput.get_field_values(self.x_field))[0]
+        return range(0, ginput.d_x)
+
+    def get_output_filename(self, kind):
+        if self.filename:
+            return self.filename
+        return kind + "_" + "-".join(self.entries_names)
+
+
 class GrafInputs:
 
     ARGS_DICT = {
         "--input_dir": "inputdir",
-        "-I": "inputdir",
+        "-i": "inputdir",
         "--output_dir": "outputdir",
-        "-O": "outputdir"
+        "-o": "outputdir"
     }
 
     def __init__(self, sys_args):
@@ -34,7 +58,9 @@ class GrafInputs:
         self.delimiter = args.get("delimiter", ";")
         self.files = args.get("files", [])
         self.output_dir = args.get("output_dir", None)
-        self.grafs = args.get("grafs", [])
+        self.grafs = []
+        for graf in args.get("grafs", []):
+            self.grafs.append(GrafDefs(graf))
 
     def read_command_line_args(self, sys_args):
         args = {}
@@ -111,10 +137,18 @@ class GrafInputs:
         return avg
 
     def get_field_values(self, name, kind=None):
-        return self.get_value_by_kind(kind)[name].values()
+        try:
+            return self.get_value_by_kind(kind)[name].values()
+        except KeyError as err:
+            print("get_field_values", name, kind, "=>", err)
+            raise
 
     def get_field_items(self, name, kind=None):
-        return self.get_value_by_kind(kind)[name].items()
+        try:
+            return self.get_value_by_kind(kind)[name].items()
+        except KeyError as err:
+            print("get_field_items", name, kind, "=>", err)
+            raise
 
     def get_value_by_kind(self, kind=None):
         v_name = "values"
