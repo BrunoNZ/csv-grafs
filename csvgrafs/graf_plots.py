@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from os import makedirs
+from os.path import join
 import matplotlib.pyplot as plt
 
 
@@ -19,7 +21,6 @@ class MatPlot:
         self.filetype = ".png"
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
         self.fig, self.a_x = self.plt.subplots(figsize=[10, 6])
-        # self.plt.xlim(1, 60)
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)
@@ -57,7 +58,7 @@ class MatPlot:
         ])
 
     def set_legend_options(self, options):
-        self.legend_options = options
+        self.legend_options.update(options)
 
     def plot_legend(self):
         self.a_x.legend(**self.legend_options)
@@ -80,25 +81,23 @@ class GrafPlots:
 
     def __init__(self, ginputs):
         self.inputs = ginputs
+        self.outdir = self.inputs.output_dir
+        if self.outdir != "" or self.outdir is not None:
+            makedirs(self.outdir, exist_ok=True)
+        else:
+            self.outdir = None
 
     def plot_all_grafs(self):
         for graf in self.inputs.grafs:
             self.plot_graf(graf)
 
     def plot_graf(self, graf):
-        defs = self.get_graf_defs(graf)
         plot = MatPlot()
-        self.plot_basic_infos(defs, plot)
-
-        for entry in graf.get("entries", []):
-            name = entry.get("field")
-            opts = entry.get("opts", {})
-            matrix = self.inputs.get_field_items(name, defs["kind"])
-            for index, values in matrix:
-                label = name + ":" + str(index)
-                plot.add_simple_plot(defs["v_x"], values, label, **opts)
-        plot.show()
-        plot.close()
+        defs = self.get_graf_defs(graf)
+        outfile = self.set_outfile(defs)
+        self.plot_basic_infos(plot, defs)
+        self.plot_entries(plot, defs)
+        self.display_plot(plot, outfile)
 
     def get_graf_defs(self, graf):
         defs = {}
@@ -108,10 +107,28 @@ class GrafPlots:
         defs.update({"title": graf.get("title", "")})
         defs.update({"x_label": graf.get("xlabel", "")})
         defs.update({"y_label": graf.get("ylabel", "")})
+        defs.update({"filename": graf.get("filename", None)})
+        defs.update({"entries": graf.get("entries", {})})
+        defs.update({"entries_names": list(map(
+            lambda e: e.get("field", ""), defs["entries"]
+        ))})
+        defs.update({"legend_options": graf.get("legend_options", {})})
         return defs
 
-    def plot_basic_infos(self, defs, plot):
+    def set_outfile(self, defs):
+        if self.outdir is None:
+            return None
+
+        filename = defs["filename"]
+        if filename == "" or filename is None:
+            filename = defs.get("kind", "") + "_"
+            filename += "-".join(defs["entries_names"])
+
+        return join(self.outdir, filename)
+
+    def plot_basic_infos(self, plot, defs):
         plot.set_title(defs["title"])
+        plot.set_legend_options(defs["legend_options"])
         plot.set_labels(x_label=defs["x_label"], y_label=defs["y_label"])
         if defs["x_field"]:
             plot.set_xticks(defs["v_x"])
@@ -120,3 +137,21 @@ class GrafPlots:
         if x_field:
             return list(self.inputs.get_field_values(x_field))[0]
         return range(0, self.inputs.d_x)
+
+    def plot_entries(self, plot, defs):
+        for entry in defs["entries"]:
+            name = entry.get("field")
+            opts = entry.get("opts", {})
+            matrix = self.inputs.get_field_items(name, defs["kind"])
+            for index, values in matrix:
+                label = name
+                if len(matrix) > 1:
+                    label += ":" + str(index)
+                plot.add_simple_plot(defs["v_x"], values, label, **opts)
+
+    def display_plot(self, plot, outfile=None):
+        if outfile:
+            plot.save(outfile)
+        else:
+            plot.show()
+        plot.close()

@@ -9,6 +9,7 @@
         "./samples/s1.csv",
         "./samples/s2.csv"
     ],
+    "output_dir": "sample_output",
     "grafs": [
         {
             "title": "Teste 1",
@@ -16,6 +17,7 @@
             "ylabel": "Label Y",
             "xfield": "a",
             "kind": "norm",
+            "filename": "",
             "entries": [
                 {
                     "field": "b",
@@ -24,9 +26,15 @@
                     }
                 },
                 {
-                    "field": "c"
+                    "field": "c",
+                    "opts": {
+                        "ls": "--"
+                    }
                 }
-            ]
+            ],
+            "legend_options": {
+                "ncol": 8
+            }
         }
     ]
 }

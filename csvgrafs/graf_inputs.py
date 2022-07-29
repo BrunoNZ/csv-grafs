@@ -19,9 +19,10 @@ class GrafInputs:
             args = json.load(json_content)
 
         self.values = {}
-        self.delimiter = args.get("delimiter", ";")
         self.fieldnames = args.get("header", [])
+        self.delimiter = args.get("delimiter", ";")
         self.files = args.get("files", [])
+        self.output_dir = args.get("output_dir", None)
         self.grafs = args.get("grafs", [])
 
     def read_files(self):
@@ -79,8 +80,8 @@ class GrafInputs:
     def calculate_avg(self):
         avg = {}
         for name, matrix in self.values.items():
-            result = np.matrix(list(matrix.values())).mean(0).tolist()
-            avg.update({name: result})
+            result = np.matrix(list(matrix.values())).mean(0).tolist()[0]
+            avg.update({name: {0: result}})
         return avg
 
     def get_field_values(self, name, kind=None):
