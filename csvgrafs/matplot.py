@@ -70,7 +70,7 @@ class MatPlot:
 
     def close(self):
         self.plt.close()
-    
+
     def display(self, outfile=None):
         if outfile:
             self.save(outfile)
