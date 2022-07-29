@@ -14,7 +14,7 @@
             "xlabel": "Label X",
             "ylabel": "Label Y",
             "xfield": "a",
-            "kind": "norm",
+            "kinds": ["original","avg","norm"],
             "filename": "",
             "entries": [
                 {
