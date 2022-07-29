@@ -15,7 +15,7 @@ class MatPlot:
         self.plt = plt
         self.filetype = ".png"
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
-        self.fig, self.a_x = self.plt.subplots(figsize=[10, 6])
+        self.fig, self.a_x = self.plt.subplots(figsize=[15, 10])
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)

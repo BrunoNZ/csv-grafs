@@ -42,13 +42,13 @@ class GrafInputs:
     }
 
     def __init__(self, sys_args):
-        self.init_args(sys_args[0])
-        self.read_command_line_args(sys_args)
-        self.read_files()
-        self.organize_values()
-        self.process_data()
+        self.__init_args(sys_args[0])
+        self.__read_command_line_args(sys_args)
+        self.__read_files()
+        self.__organize_values()
+        self.__process_data()
 
-    def init_args(self, jsonfile):
+    def __init_args(self, jsonfile):
         args = {}
         with open(jsonfile, encoding="UTF-8") as json_content:
             args = json.load(json_content)
@@ -62,7 +62,7 @@ class GrafInputs:
         for graf in args.get("grafs", []):
             self.grafs.append(GrafDefs(graf))
 
-    def read_command_line_args(self, sys_args):
+    def __read_command_line_args(self, sys_args):
         args = {}
         for i, opt in enumerate(sys_args):
             opt_arg = self.ARGS_DICT.get(opt, False)
@@ -77,11 +77,11 @@ class GrafInputs:
         if args.get("outputdir", False):
             self.output_dir = args.get("outputdir")
 
-    def read_files(self):
+    def __read_files(self):
         for index, fname in enumerate(self.files):
-            self.values.update({index: self.read_csv(fname)})
+            self.values.update({index: self.__read_csv(fname)})
 
-    def read_csv(self, fname):
+    def __read_csv(self, fname):
         values = {}
         for name in self.fieldnames:
             values.update({name: []})
@@ -98,7 +98,7 @@ class GrafInputs:
                     values[name].append(row[name])
         return values
 
-    def organize_values(self):
+    def __organize_values(self):
         nvalues = {}
         dx_vector = []
         for name in self.fieldnames:
@@ -116,11 +116,11 @@ class GrafInputs:
             raise AssertionError("not unique DX")
         self.d_x = s_dx_vector[0]
 
-    def process_data(self):
-        self.values_normalized = self.calculate_norm()
-        self.avg = self.calculate_avg()
+    def __process_data(self):
+        self.values_normalized = self.__calculate_norm()
+        self.avg = self.__calculate_avg()
 
-    def calculate_norm(self):
+    def __calculate_norm(self):
         normalized = {}
         for name, matrix in self.values.items():
             normalized.update({name: {}})
@@ -129,7 +129,7 @@ class GrafInputs:
                 normalized[name].update({index: norm})
         return normalized
 
-    def calculate_avg(self):
+    def __calculate_avg(self):
         avg = {}
         for name, matrix in self.values.items():
             result = np.matrix(list(matrix.values())).mean(0).tolist()[0]
