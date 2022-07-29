@@ -6,8 +6,7 @@ from csvgrafs import graf_plots as plots
 
 
 def main():
-    input_json = sys.argv[1:][0]
-    ginputs = inputs.GrafInputs(input_json)
+    ginputs = inputs.GrafInputs(sys.argv[1:])
     gplots = plots.GrafPlots(ginputs)
     gplots.plot_all_grafs()
 

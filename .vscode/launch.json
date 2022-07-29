@@ -12,6 +12,7 @@
             "console": "internalConsole",
             "args": [
                 "./samples/sample.json",
+                "-I", "./samples/files/"
             ],
             "justMyCode": true,
             "autoReload": {

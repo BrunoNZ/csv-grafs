@@ -6,8 +6,6 @@
     ],
     "delimiter": ";",
     "files": [
-        "./samples/s1.csv",
-        "./samples/s2.csv"
     ],
     "output_dir": "sample_output",
     "grafs": [

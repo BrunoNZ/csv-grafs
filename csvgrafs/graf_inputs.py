@@ -4,11 +4,22 @@
 import csv
 import json
 import numpy as np
+from os import listdir
+from os.path import join
 
 
 class GrafInputs:
-    def __init__(self, jsonfile):
-        self.init_args(jsonfile)
+
+    ARGS_DICT = {
+        "--input_dir": "inputdir",
+        "-I": "inputdir",
+        "--output_dir": "outputdir",
+        "-O": "outputdir"
+    }
+
+    def __init__(self, sys_args):
+        self.init_args(sys_args[0])
+        self.read_command_line_args(sys_args)
         self.read_files()
         self.organize_values()
         self.process_data()
@@ -24,6 +35,21 @@ class GrafInputs:
         self.files = args.get("files", [])
         self.output_dir = args.get("output_dir", None)
         self.grafs = args.get("grafs", [])
+
+    def read_command_line_args(self, sys_args):
+        args = {}
+        for i, opt in enumerate(sys_args):
+            opt_arg = self.ARGS_DICT.get(opt, False)
+            if opt_arg:
+                args[opt_arg] = sys_args[i+1]
+
+        inputdir = args.get("inputdir", False)
+        if inputdir:
+            dirfiles = sorted(listdir(inputdir))
+            self.files = map(lambda f: join(inputdir, f), dirfiles)
+
+        if args.get("outputdir", False):
+            self.output_dir = args.get("outputdir")
 
     def read_files(self):
         for index, fname in enumerate(self.files):
