@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
+from os import listdir
+from os.path import join
 import csv
 import json
 import numpy as np
-from os import listdir
-from os.path import join
 
 
 class GrafInputs:
