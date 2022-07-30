@@ -10,7 +10,7 @@ import numpy as np
 
 class GrafDefs:
 
-    def __init__(self, graf):
+    def __init__(self, graf, legend_options=dict):
         self.enabled = graf.get("enabled", True)
         self.kinds = graf.get("kinds", ["original"])
         self.x_field = graf.get("xfield", False)
@@ -21,7 +21,10 @@ class GrafDefs:
         self.filename = graf.get("filename", None)
         self.entries = graf.get("entries", {})
         self.entries_names = list(map(lambda e: e.get("field"), self.entries))
-        self.legend_options = graf.get("legend_options", {})
+        self.legend_options = {
+            **legend_options,
+            **graf.get("legend_options", {})
+        }
 
     def get_vx(self, ginput):
         if self.x_field:
@@ -66,9 +69,10 @@ class GrafInputs:
         self.delimiter = args.get("delimiter", ";")
         self.files = args.get("files", [])
         self.output_dir = args.get("output_dir", None)
+        legend_options = args.get("legend_options", {})
         self.grafs = []
         for graf in args.get("grafs", []):
-            self.grafs.append(GrafDefs(graf))
+            self.grafs.append(GrafDefs(graf, legend_options))
 
     def __read_command_line_args(self, sys_args):
         args = {}

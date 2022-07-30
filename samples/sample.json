@@ -10,10 +10,12 @@
     "output_dir": "sample_output",
     "grafs": [
         {
+            "enabled": true,
             "title": "Teste 1",
             "xlabel": "Label X",
             "ylabel": "Label Y",
             "xfield": "a",
+            "xfreq": 15,
             "kinds": ["original","avg","norm"],
             "filename": "",
             "entries": [

@@ -20,13 +20,13 @@ class GrafPlots:
         for graf in self.inputs.grafs:
             if graf.enabled:
                 for kind in graf.kinds:
-                    self.plot_graf(graf, kind)
+                    self.prepare_plot(graf, kind).display()
 
-    def plot_graf(self, graf, kind):
-        plot = MatPlot()
+    def prepare_plot(self, graf, kind):
+        plot = MatPlot(self.set_outfile(graf, kind))
         self.plot_basic_infos(plot, graf)
         self.plot_entries(plot, graf, kind)
-        plot.display(self.set_outfile(graf, kind))
+        return plot
 
     def set_outfile(self, graf, kind):
         if self.outdir is None:

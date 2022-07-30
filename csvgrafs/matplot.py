@@ -13,10 +13,11 @@ class MatPlot:
         "ncol": 3
     }
 
-    def __init__(self):
+    def __init__(self, outfile=None):
         self.plt = plt
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
         self.fig, self.a_x = self.plt.subplots(figsize=[12, 8])
+        self.outfile = outfile
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)
@@ -74,9 +75,9 @@ class MatPlot:
     def close(self):
         self.plt.close()
 
-    def display(self, outfile=None):
-        if outfile:
-            self.save(outfile)
+    def display(self):
+        if self.outfile:
+            self.save(self.outfile)
         else:
             self.show()
         self.close()

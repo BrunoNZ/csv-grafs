@@ -11,4 +11,5 @@ def main():
     gplots.plot_all_grafs()
 
 
-main()
+if __name__ == '__main__':
+    main()
