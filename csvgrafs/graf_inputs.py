@@ -11,8 +11,10 @@ import numpy as np
 class GrafDefs:
 
     def __init__(self, graf):
+        self.enabled = graf.get("enabled", True)
         self.kinds = graf.get("kinds", ["original"])
         self.x_field = graf.get("xfield", False)
+        self.x_freq = graf.get("xfreq", False)
         self.title = graf.get("title", "")
         self.x_label = graf.get("xlabel", "")
         self.y_label = graf.get("ylabel", "")
@@ -25,6 +27,12 @@ class GrafDefs:
         if self.x_field:
             return list(ginput.get_field_values(self.x_field))[0]
         return range(0, ginput.d_x)
+
+    def get_xticks(self, ginput):
+        v_x = self.get_vx(ginput)
+        if not self.x_freq:
+            return v_x
+        return np.arange(v_x[0], v_x[-1], self.x_freq)
 
     def get_output_filename(self, kind):
         if self.filename:
@@ -78,8 +86,9 @@ class GrafInputs:
             self.output_dir = args.get("outputdir")
 
     def __read_files(self):
+        self.values.update({"original": {}})
         for index, fname in enumerate(self.files):
-            self.values.update({index: self.__read_csv(fname)})
+            self.values["original"].update({index: self.__read_csv(fname)})
 
     def __read_csv(self, fname):
         values = {}
@@ -99,14 +108,14 @@ class GrafInputs:
         return values
 
     def __organize_values(self):
-        nvalues = {}
+        nvalues = {"original": {}}
         dx_vector = []
         for name in self.fieldnames:
-            nvalues.update({name: {}})
+            nvalues["original"].update({name: {}})
 
-        for index, matrix in self.values.items():
+        for index, matrix in self.values["original"].items():
             for name, vector in matrix.items():
-                nvalues[name].update({index: vector})
+                nvalues["original"][name].update({index: vector})
                 dx_vector.append(len(vector))
         self.values.clear()
         self.values = nvalues
@@ -117,43 +126,48 @@ class GrafInputs:
         self.d_x = s_dx_vector[0]
 
     def __process_data(self):
-        self.values_normalized = self.__calculate_norm()
-        self.avg = self.__calculate_avg()
+        self.values.update({"norm": self.__calculate_norm()})
+        self.values.update({"norm01": self.__calculate_norm_01()})
+        self.values.update({"avg": self.__calculate_avg()})
 
     def __calculate_norm(self):
         normalized = {}
-        for name, matrix in self.values.items():
+        for name, matrix in self.values["original"].items():
             normalized.update({name: {}})
             for index, vector in matrix.items():
                 norm = vector / np.linalg.norm(vector)
                 normalized[name].update({index: norm})
         return normalized
 
+    def __calculate_norm_01(self):
+        normalized = {}
+        for name, matrix in self.values["original"].items():
+            normalized.update({name: {}})
+            for index, vector in matrix.items():
+                norm = (vector - np.min(vector))/np.ptp(vector)
+                normalized[name].update({index: norm})
+        return normalized
+
     def __calculate_avg(self):
         avg = {}
-        for name, matrix in self.values.items():
+        for name, matrix in self.values["original"].items():
             result = np.matrix(list(matrix.values())).mean(0).tolist()[0]
             avg.update({name: {0: result}})
         return avg
 
-    def get_field_values(self, name, kind=None):
+    def get_field_values(self, name, kind="original"):
         try:
-            return self.get_value_by_kind(kind)[name].values()
+            return self.get_values_of_kind(kind).get(name).values()
         except KeyError as err:
             print("get_field_values", name, kind, "=>", err)
             raise
 
     def get_field_items(self, name, kind=None):
         try:
-            return self.get_value_by_kind(kind)[name].items()
+            return self.get_values_of_kind(kind).get(name).items()
         except KeyError as err:
             print("get_field_items", name, kind, "=>", err)
             raise
 
-    def get_value_by_kind(self, kind=None):
-        v_name = "values"
-        if kind == "norm":
-            v_name = "values_normalized"
-        elif kind == "avg":
-            v_name = "avg"
-        return getattr(self, v_name)
+    def get_values_of_kind(self, kind=None):
+        return self.values.get(kind)

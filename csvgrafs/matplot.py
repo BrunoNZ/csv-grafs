@@ -1,4 +1,6 @@
+import matplotlib
 import matplotlib.pyplot as plt
+matplotlib.use('svg')
 
 
 class MatPlot:
@@ -13,9 +15,8 @@ class MatPlot:
 
     def __init__(self):
         self.plt = plt
-        self.filetype = ".png"
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
-        self.fig, self.a_x = self.plt.subplots(figsize=[15, 10])
+        self.fig, self.a_x = self.plt.subplots(figsize=[12, 8])
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)
@@ -24,7 +25,6 @@ class MatPlot:
         diff = []
         for y1i, y2i in zip(v_y_1, v_y_2):
             diff.append(y1i - y2i)
-
         self.add_simple_plot(diff, label, **options)
 
     def add_firstlast_plot(self, v_y_1, v_y_2, label, **options):
@@ -39,8 +39,11 @@ class MatPlot:
         if y_label is not None:
             self.a_x.set_ylabel(y_label)
 
-    def set_xticks(self, x_ticks):
-        self.a_x.set_xticks(x_ticks)
+    def set_xticks(self, ticks):
+        self.a_x.set_xticks(ticks)
+
+    def set_yticks(self, ticks):
+        self.a_x.set_yticks(ticks)
 
     def set_title(self, title):
         self.a_x.set_title(title)
@@ -61,7 +64,7 @@ class MatPlot:
     def save(self, filename):
         self.plot_legend()
         self.fig.tight_layout()
-        self.fig.savefig(filename + self.filetype)
+        self.fig.savefig(filename)
 
     def show(self):
         self.plot_legend()

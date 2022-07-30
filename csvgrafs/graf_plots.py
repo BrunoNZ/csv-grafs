@@ -18,8 +18,9 @@ class GrafPlots:
 
     def plot_all_grafs(self):
         for graf in self.inputs.grafs:
-            for kind in graf.kinds:
-                self.plot_graf(graf, kind)
+            if graf.enabled:
+                for kind in graf.kinds:
+                    self.plot_graf(graf, kind)
 
     def plot_graf(self, graf, kind):
         plot = MatPlot()
@@ -37,7 +38,7 @@ class GrafPlots:
         plot.set_legend_options(graf.legend_options)
         plot.set_labels(x_label=graf.x_label, y_label=graf.y_label)
         if graf.x_field:
-            plot.set_xticks(graf.get_vx(self.inputs))
+            plot.set_xticks(graf.get_xticks(self.inputs))
 
     def plot_entries(self, plot, graf, kind):
         v_x = graf.get_vx(self.inputs)
