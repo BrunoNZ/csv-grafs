@@ -11,10 +11,10 @@ CSV_GRAFS = join(dirname(__file__), "main.py")
 POPEN_OPTS = {"stdout": subprocess.PIPE, "stderr": subprocess.DEVNULL}
 
 
-def call_proc(cmd):
-    with subprocess.Popen([CSV_GRAFS] + cmd, **POPEN_OPTS) as cmd_sp:
-        out, err = cmd_sp.communicate()
-        print("OK: ", " ".join(cmd))
+def call_proc(opts):
+    with subprocess.Popen([CSV_GRAFS] + opts, **POPEN_OPTS) as cmd:
+        out, err = cmd.communicate()
+        print("OK: ", " ".join(opts))
         return (out, err)
 
 
