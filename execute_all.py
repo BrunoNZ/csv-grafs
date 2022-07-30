@@ -1,11 +1,11 @@
 #!/usr/bin/python3
 
 import sys
+import subprocess
 import multiprocessing
 from multiprocessing.pool import ThreadPool
 from os import listdir
 from os.path import join, dirname
-import subprocess
 
 CSV_GRAFS = join(dirname(__file__), "main.py")
 POPEN_OPTS = {"stdout": subprocess.PIPE, "stderr": subprocess.DEVNULL}
