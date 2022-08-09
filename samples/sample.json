@@ -1,32 +1,33 @@
 {
     "header": [
+        "index",
         "a",
-        "b",
-        "c"
+        "b"
     ],
     "delimiter": ";",
     "files": [
     ],
     "output_dir": "sample_output",
+    "figsize": [12, 8],
     "grafs": [
         {
             "enabled": true,
             "title": "Teste 1",
             "xlabel": "Label X",
             "ylabel": "Label Y",
-            "xfield": "a",
-            "xfreq": 15,
+            "xfield": "index",
+            "xfreq": 5,
             "kinds": ["original","avg","norm"],
             "filename": "",
             "entries": [
                 {
-                    "field": "b",
+                    "field": "a",
                     "opts": {
                         "c": "green"
                     }
                 },
                 {
-                    "field": "c",
+                    "field": "b",
                     "opts": {
                         "ls": "--"
                     }

@@ -20,34 +20,35 @@ class GrafPlots:
         for graf in self.inputs.grafs:
             if graf.enabled:
                 for kind in graf.kinds:
-                    self.prepare_plot(graf, kind).display()
+                    self.plot_graf(graf, kind)
 
-    def prepare_plot(self, graf, kind):
-        plot = MatPlot(self.set_outfile(graf, kind))
-        self.plot_basic_infos(plot, graf)
-        self.plot_entries(plot, graf, kind)
-        return plot
+    def plot_graf(self, graf, kind):
+        self.__prepare_plot(graf, kind).display()
 
-    def set_outfile(self, graf, kind):
-        if self.outdir is None:
-            return None
-        return join(self.outdir, graf.get_output_filename(kind))
-
-    def plot_basic_infos(self, plot, graf):
+    def __prepare_plot(self, graf, kind):
+        plot = MatPlot(self.inputs.figsize)
+        plot.set_outfile(self.__get_outfile(graf, kind))
         plot.set_title(graf.title)
         plot.set_legend_options(graf.legend_options)
         plot.set_labels(x_label=graf.x_label, y_label=graf.y_label)
         if graf.x_field:
             plot.set_xticks(graf.get_xticks(self.inputs))
+        self.__plot_entries(plot, graf, kind)
+        return plot
 
-    def plot_entries(self, plot, graf, kind):
+    def __get_outfile(self, graf, kind):
+        if self.outdir is None:
+            return None
+        return join(self.outdir, graf.get_output_filename(kind))
+
+    def __plot_entries(self, plot, graf, kind):
         v_x = graf.get_vx(self.inputs)
         for entry in graf.entries:
             name = entry.get("field")
             opts = entry.get("opts", {})
-            matrix = self.inputs.get_field_items(name, kind)
-            for index, values in matrix:
+            matrix = self.inputs.get_field_matrix(name, kind)
+            for index, vector in enumerate(matrix):
                 label = name
                 if len(matrix) > 1:
                     label += ":" + str(index)
-                plot.add_simple_plot(v_x, values, label, **opts)
+                plot.add_simple_plot(v_x, vector[:], label, **opts)

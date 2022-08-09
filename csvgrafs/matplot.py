@@ -13,11 +13,18 @@ class MatPlot:
         "ncol": 3
     }
 
-    def __init__(self, outfile=None):
+    DEFAULT_FIGSIZE = [8, 6]
+
+    def __init__(self, figsize=None):
         self.plt = plt
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
-        self.fig, self.a_x = self.plt.subplots(figsize=[12, 8])
-        self.outfile = outfile
+        self.outfile = None
+        self.figsize = figsize if figsize else self.DEFAULT_FIGSIZE
+        self.fig, self.a_x = self.plt.subplots(figsize=self.figsize)
+
+    def set_outfile(self, outfile):
+        if outfile:
+            self.outfile = outfile
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)
@@ -31,8 +38,8 @@ class MatPlot:
     def add_firstlast_plot(self, v_y_1, v_y_2, label, **options):
         cont = {"ls": "-"}
         dash = {"ls": "--"}
-        self.add_simple_plot(v_y_1, label+" (Inicial)", **options, **cont)
-        self.add_simple_plot(v_y_2, label+" (Final)", **options, **dash)
+        self.add_simple_plot(v_y_1, label + " (Inicial)", **options, **cont)
+        self.add_simple_plot(v_y_2, label + " (Final)", **options, **dash)
 
     def set_labels(self, x_label=None, y_label=None):
         if x_label is not None:
@@ -52,32 +59,18 @@ class MatPlot:
     def modify_height(self, perc):
         box = self.a_x.get_position()
         self.a_x.set_position([
-            box.x0, box.y0 + box.height * (1.0-perc),
-            box.width, box.height*perc
+            box.x0, box.y0 + box.height * (1.0 - perc),
+            box.width, box.height * perc
         ])
 
     def set_legend_options(self, options):
         self.legend_options.update(options)
 
-    def plot_legend(self):
-        self.a_x.legend(**self.legend_options)
-
-    def save(self, filename):
-        self.plot_legend()
-        self.fig.tight_layout()
-        self.fig.savefig(filename)
-
-    def show(self):
-        self.plot_legend()
-        self.fig.tight_layout()
-        self.plt.show()
-
-    def close(self):
-        self.plt.close()
-
     def display(self):
+        self.a_x.legend(**self.legend_options)
+        self.fig.tight_layout()
         if self.outfile:
-            self.save(self.outfile)
+            self.fig.savefig(self.outfile)
         else:
-            self.show()
-        self.close()
+            self.plt.show()
+        self.plt.close()

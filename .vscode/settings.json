@@ -1,3 +1,15 @@
 {
-    "python.linting.enabled": true
+    "python.linting.enabled": true,
+    "python.formatting.autopep8Args": [
+      "--max-line-length",
+      "100",
+      "--aggressive",
+      "--aggressive"
+    ],
+    "python.linting.flake8Enabled": true,
+    "python.testing.pytestArgs": [
+      "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }

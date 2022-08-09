@@ -1,4 +1,7 @@
 # Para instalar:
+# apt install python3-pip
 # python3 -m pip install -r requirements.txt
 matplotlib
 numpy
+flake8
+autopep8
