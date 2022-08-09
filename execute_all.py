@@ -7,19 +7,19 @@ from multiprocessing.pool import ThreadPool
 from os import listdir
 from os.path import join, dirname
 
-CSV_GRAFS = join(dirname(__file__), "main.py")
+CSV_GRAFS = join(dirname(__file__), "plot_graf.py")
 POPEN_OPTS = {"stdout": subprocess.PIPE, "stderr": subprocess.DEVNULL}
 
 PARAM_ERROR_MSG = """
 Erro! Parâmetros inválidos. Utilize:
-./execute_all.py [DEFS_JSON] [INPUT_DIR] [INSIDE_DIR] [OUTPUT_DIR]
+./execute_all.py <DEFS_JSON> <INPUT_DIR> <INSIDE_DIR> <OUTPUT_DIR>
 
- - DEFS_JSON: Arquivo JSON contendo as definições da plotagem
- - INPUT_DIR: Diretório contendo os diretórios dos resultados
- - INSIDE_DIR: Nome do diretório interno ao INPUT_DIR/<res> contendo os CSVs
-   - Ex.: Para [INPUT_DIR]/<nome_resultado>/log, o valor seria "log"
-   - Usar "" caso os CSVs estejam imediatamente em [INPUT_DIR]/<nome_resultado>
- - OUTPUT_DIR: Diretório onde as figuras serão criadas
+ * DEFS_JSON: Arquivo JSON contendo as definições da plotagem
+ * INPUT_DIR: Diretório contendo os diretórios dos resultados
+ * INSIDE_DIR: Nome do diretório interno ao INPUT_DIR/<res> contendo os CSVs
+   - Ex.: Para <INPUT_DIR>/nome_resultado/log, o valor seria "log"
+   - Usar "" caso os CSVs estejam imediatamente em <INPUT_DIR>/nome_resultado
+ * OUTPUT_DIR: Diretório onde as figuras serão criadas
 """
 
 
