@@ -8,7 +8,7 @@
             "name": "GeraGrafs: Teste",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/main.py",
+            "program": "${workspaceFolder}/plot_graf.py",
             "console": "integratedTerminal",
             "args": [
                 "./samples/sample.json",
@@ -23,7 +23,7 @@
             "name": "GeraGrafs: Real",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/main.py",
+            "program": "${workspaceFolder}/plot_graf.py",
             "console": "internalConsole",
             "args": [
                 "/home/bruno/Mariane/graficos/testes.json",

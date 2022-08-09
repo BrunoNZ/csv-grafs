@@ -26,7 +26,7 @@ class GrafPlots:
         self.__prepare_plot(graf, kind).display()
 
     def __prepare_plot(self, graf, kind):
-        plot = MatPlot(self.inputs.figsize)
+        plot = MatPlot(self.inputs.figsize, self.inputs.dpi)
         plot.set_outfile(self.__get_outfile(graf, kind))
         plot.set_title(graf.title)
         plot.set_legend_options(graf.legend_options)

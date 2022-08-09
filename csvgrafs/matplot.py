@@ -1,9 +1,21 @@
+from os import getenv
 import matplotlib
 import matplotlib.pyplot as plt
-matplotlib.use('svg')
+matplotlib.use(getenv("MPLBACKEND", "svg"))
 
 
 class MatPlot:
+    """
+Wrapper do Matplotlib para facilitar a plotagem de alguns
+tipos especificos de gráficos.
+
+Atributos:
+- plt (pyplot): Instancia de matplotlib.pyplot
+- outfile (string): Caminho do arquivo da imagem (sem extensão)
+- legend_options (dict): Opcoes usadas para configura a_x.legend
+- fig (Figure): Retorno de subplots
+- a_x (axes.Axes): Retorno de subplots
+    """
 
     DEFAULT_LEGEND_OPTIONS = {
         "loc": 'upper center',
@@ -13,14 +25,11 @@ class MatPlot:
         "ncol": 3
     }
 
-    DEFAULT_FIGSIZE = [8, 6]
-
-    def __init__(self, figsize=None):
+    def __init__(self, figsize=None, dpi=None):
         self.plt = plt
         self.legend_options = self.DEFAULT_LEGEND_OPTIONS
         self.outfile = None
-        self.figsize = figsize if figsize else self.DEFAULT_FIGSIZE
-        self.fig, self.a_x = self.plt.subplots(figsize=self.figsize)
+        self.fig, self.a_x = self.plt.subplots(figsize=figsize, dpi=dpi)
 
     def set_outfile(self, outfile):
         if outfile:

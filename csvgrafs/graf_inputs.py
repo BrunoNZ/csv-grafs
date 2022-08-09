@@ -9,6 +9,34 @@ import numpy as np
 
 
 class GrafDefs:
+    """
+Armazena os parâmetros de um gráfico/figura, lidos da seção "grafs" do
+arquivo JSON
+
+Atributos:
+- enabled (bool): Define se o gráfico deve ser plotado ou não.
+- kinds ([string]): Lista dos tipos de gráficos que devem ser plotados
+    para o atual conjunto de parâmetros.
+    (Opções: "original", "avg", "norm", "norm01")
+- x_field (string): Nome do campo que deve ser usado para o eixo X.
+    Caso o valor seja nulo será usado "range(1, len)", sendo "len"
+    a quantidade de linhas dos arquivos CSVs
+- x_freq (int): Valor que define a frequência em que os ticks do eixo X
+    serão plotados, entre o primeiro e último valor de "x_field".
+    Caso o valor seja nulo será usado o valor de "x_field".
+    Ex.: Para o valor 5, será plotado: [1,6,11,...].
+- title (string): Título do gráfico
+- x_label (string): Label do eixo X
+- y_label (string): Label do eixo Y
+- filename (string): Nome do arquivo de saída.
+    Caso o valor seja nulo será usada uma combinação do tipo e dos campos.
+- entries ([dict]): Dicionário contendo as opções dos campos que devem ser
+    plotados
+- entries_names ([string]): Lista dos nomes dos campos, gerada a partir
+    das chaves de "entries"
+- legend_options (dict): Opções de plotagem da legenda, que serão passados
+    como parâmetros para a função "matplotlib.pyplot.legend"
+    """
 
     def __init__(self, graf, legend_options=dict):
         self.enabled = graf.get("enabled", True)
@@ -44,6 +72,24 @@ class GrafDefs:
 
 
 class GrafInputs:
+    """
+Armazena os parâmetros globais da plotagem, lidos da seção principal do
+arquivo JSON
+
+Atributos:
+- values (dict): Dicionário de dicionário, em que cada entrada é um
+    Array de Arrays (numpy) contendo.
+    O primeiro nível de chaves é relativo ao "tipo" dos valores.
+    O segundo nível de chaves é relativo aos "fieldnames".
+    Ex.: {"original": {"index": (Array)}, "norm": {"index": (Array)}}
+- fieldnames ([string]): Nomes dos campos dos CSVs
+- delimiter (caractere): Caractere usado como delimitador dos CSVs
+- files ([string]): Lista dos arquivos CSVs
+- output_dir (string): Diretório em que as figuras serão criadas
+- figsize ([double,double]): Valores que definem o tamanho das figuras
+- dpi (int): Valor que define o DPI das figuras
+- grafs ([GrafDefs]): Vetor de GrafDefs
+    """
 
     ARGS_DICT = {
         "--input_dir": "inputdir",
@@ -70,6 +116,7 @@ class GrafInputs:
         self.files = args.get("files", [])
         self.output_dir = args.get("output_dir", None)
         self.figsize = args.get("figsize", None)
+        self.dpi = args.get("dpi", None)
         self.grafs = []
         for graf in args.get("grafs", []):
             self.grafs.append(GrafDefs(graf, args.get("legend_options", {})))
