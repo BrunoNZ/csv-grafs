@@ -6,69 +6,7 @@ from os.path import join
 import csv
 import json
 import numpy as np
-
-
-class GrafDefs:
-    """
-Armazena os parâmetros de um gráfico/figura, lidos da seção "grafs" do
-arquivo JSON
-
-Atributos:
-- enabled (bool): Define se o gráfico deve ser plotado ou não.
-- kinds ([string]): Lista dos tipos de gráficos que devem ser plotados
-    para o atual conjunto de parâmetros.
-    (Opções: "original", "avg", "norm", "norm01")
-- x_field (string): Nome do campo que deve ser usado para o eixo X.
-    Caso o valor seja nulo será usado "range(1, len)", sendo "len"
-    a quantidade de linhas dos arquivos CSVs
-- x_freq (int): Valor que define a frequência em que os ticks do eixo X
-    serão plotados, entre o primeiro e último valor de "x_field".
-    Caso o valor seja nulo será usado o valor de "x_field".
-    Ex.: Para o valor 5, será plotado: [1,6,11,...].
-- title (string): Título do gráfico
-- x_label (string): Label do eixo X
-- y_label (string): Label do eixo Y
-- filename (string): Nome do arquivo de saída.
-    Caso o valor seja nulo será usada uma combinação do tipo e dos campos.
-- entries ([dict]): Dicionário contendo as opções dos campos que devem ser
-    plotados
-- entries_names ([string]): Lista dos nomes dos campos, gerada a partir
-    das chaves de "entries"
-- legend_options (dict): Opções de plotagem da legenda, que serão passados
-    como parâmetros para a função "matplotlib.pyplot.legend"
-    """
-
-    def __init__(self, graf, legend_options=dict):
-        self.enabled = graf.get("enabled", True)
-        self.kinds = graf.get("kinds", ["original"])
-        self.x_field = graf.get("xfield", False)
-        self.x_freq = graf.get("xfreq", False)
-        self.title = graf.get("title", "")
-        self.x_label = graf.get("xlabel", "")
-        self.y_label = graf.get("ylabel", "")
-        self.filename = graf.get("filename", None)
-        self.entries = graf.get("entries", {})
-        self.entries_names = list(map(lambda e: e.get("field"), self.entries))
-        self.legend_options = {
-            **legend_options,
-            **graf.get("legend_options", {})
-        }
-
-    def get_vx(self, ginput):
-        if self.x_field:
-            return list(ginput.get_field_matrix(self.x_field))[0]
-        return range(0, ginput.d_x)
-
-    def get_xticks(self, ginput):
-        v_x = self.get_vx(ginput)
-        if not self.x_freq:
-            return v_x
-        return np.arange(v_x[0], v_x[-1], self.x_freq)
-
-    def get_output_filename(self, kind):
-        if self.filename:
-            return self.filename
-        return kind + "_" + "-".join(self.entries_names)
+from csvgrafs.graf_defs import GrafDefs
 
 
 class GrafInputs:
@@ -76,7 +14,7 @@ class GrafInputs:
 Armazena os parâmetros globais da plotagem, lidos da seção principal do
 arquivo JSON
 
-Atributos:
+### Atributos:
 - values (dict): Dicionário de dicionário, em que cada entrada é um
     Array de Arrays (numpy) contendo.
     O primeiro nível de chaves é relativo ao "tipo" dos valores.
@@ -86,6 +24,8 @@ Atributos:
 - delimiter (caractere): Caractere usado como delimitador dos CSVs
 - files ([string]): Lista dos arquivos CSVs
 - output_dir (string): Diretório em que as figuras serão criadas
+- mplbackend (string): Indica qual Backend deve ser usado
+- fastmode (bool): Indica se a plotagem deve usar o "fastmode"
 - figsize ([double,double]): Valores que definem o tamanho das figuras
 - dpi (int): Valor que define o DPI das figuras
 - grafs ([GrafDefs]): Vetor de GrafDefs
@@ -115,6 +55,8 @@ Atributos:
         self.delimiter = args.get("delimiter", ";")
         self.files = args.get("files", [])
         self.output_dir = args.get("output_dir", None)
+        self.mplbackend = args.get("mplbackend", "svg")
+        self.fastmode = args.get("fastmode", False)
         self.figsize = args.get("figsize", None)
         self.dpi = args.get("dpi", None)
         self.grafs = []

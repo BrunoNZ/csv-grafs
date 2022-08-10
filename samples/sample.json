@@ -8,10 +8,17 @@
     "files": [
     ],
     "output_dir": "sample_output",
-    "figsize": [12, 8],
+    "_figsize": [12, 8],
+    "legend_options": {
+        "ncol": 5
+    },
+    "backend": "svg",
+    "fastmode": true,
     "grafs": [
         {
             "enabled": true,
+            "plot_title": true,
+            "plot_legend": true,
             "title": "Teste 1",
             "xlabel": "Label X",
             "ylabel": "Label Y",
@@ -32,10 +39,7 @@
                         "ls": "--"
                     }
                 }
-            ],
-            "legend_options": {
-                "ncol": 5
-            }
+            ]            
         }
     ]
 }

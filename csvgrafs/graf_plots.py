@@ -7,14 +7,17 @@ from csvgrafs.matplot import MatPlot
 
 
 class GrafPlots:
+    """
+Plota todos os gráficos do GrafInputs dado como entrada.
+
+### Atributos:
+- inputs (GrafInputs): A instância de GrafInputs usada para inicializar a
+    classe
+    """
 
     def __init__(self, ginputs):
         self.inputs = ginputs
-        self.outdir = self.inputs.output_dir
-        if self.outdir != "" or self.outdir is not None:
-            makedirs(self.outdir, exist_ok=True)
-        else:
-            self.outdir = None
+        self.__create_outdir()
 
     def plot_all_grafs(self):
         for graf in self.inputs.grafs:
@@ -23,23 +26,33 @@ class GrafPlots:
                     self.plot_graf(graf, kind)
 
     def plot_graf(self, graf, kind):
-        self.__prepare_plot(graf, kind).display()
-
-    def __prepare_plot(self, graf, kind):
         plot = MatPlot(self.inputs.figsize, self.inputs.dpi)
-        plot.set_outfile(self.__get_outfile(graf, kind))
-        plot.set_title(graf.title)
-        plot.set_legend_options(graf.legend_options)
-        plot.set_labels(x_label=graf.x_label, y_label=graf.y_label)
-        if graf.x_field:
-            plot.set_xticks(graf.get_xticks(self.inputs))
         self.__plot_entries(plot, graf, kind)
-        return plot
+        self.__plot_infos(plot, graf)
+        plot.display(
+            self.__get_outfile(graf, kind),
+            self.inputs.mplbackend,
+            self.inputs.fastmode
+        )
+
+    def __create_outdir(self):
+        if self.__outdir() != "" or self.__outdir() is not None:
+            makedirs(self.__outdir(), exist_ok=True)
+
+    def __outdir(self):
+        return self.inputs.output_dir
 
     def __get_outfile(self, graf, kind):
-        if self.outdir is None:
-            return None
-        return join(self.outdir, graf.get_output_filename(kind))
+        return join(self.__outdir(), graf.get_output_filename(kind))
+
+    def __plot_infos(self, plot, graf):
+        plot.set_labels(x_label=graf.xlabel(), y_label=graf.ylabel())
+        if graf.xfield():
+            plot.set_xticks(graf.get_xticks(self.inputs))
+        if graf.plot_title():
+            plot.set_title(graf.title())
+        if graf.plot_legend():
+            plot.set_legend(graf.legend_options())
 
     def __plot_entries(self, plot, graf, kind):
         v_x = graf.get_vx(self.inputs)

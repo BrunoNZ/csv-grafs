@@ -1,7 +1,6 @@
-from os import getenv
 import matplotlib
 import matplotlib.pyplot as plt
-matplotlib.use(getenv("MPLBACKEND", "svg"))
+import matplotlib.style as mplstyle
 
 
 class MatPlot:
@@ -9,10 +8,8 @@ class MatPlot:
 Wrapper do Matplotlib para facilitar a plotagem de alguns
 tipos especificos de gráficos.
 
-Atributos:
+### Atributos:
 - plt (pyplot): Instancia de matplotlib.pyplot
-- outfile (string): Caminho do arquivo da imagem (sem extensão)
-- legend_options (dict): Opcoes usadas para configura a_x.legend
 - fig (Figure): Retorno de subplots
 - a_x (axes.Axes): Retorno de subplots
     """
@@ -27,13 +24,7 @@ Atributos:
 
     def __init__(self, figsize=None, dpi=None):
         self.plt = plt
-        self.legend_options = self.DEFAULT_LEGEND_OPTIONS
-        self.outfile = None
         self.fig, self.a_x = self.plt.subplots(figsize=figsize, dpi=dpi)
-
-    def set_outfile(self, outfile):
-        if outfile:
-            self.outfile = outfile
 
     def add_simple_plot(self, v_x, v_y, label, **options):
         self.a_x.plot(v_x, v_y, label=label, **options)
@@ -65,6 +56,9 @@ Atributos:
     def set_title(self, title):
         self.a_x.set_title(title)
 
+    def set_legend(self, options):
+        self.a_x.legend(**{**self.DEFAULT_LEGEND_OPTIONS, **options})
+
     def modify_height(self, perc):
         box = self.a_x.get_position()
         self.a_x.set_position([
@@ -72,14 +66,15 @@ Atributos:
             box.width, box.height * perc
         ])
 
-    def set_legend_options(self, options):
-        self.legend_options.update(options)
+    def display(self, outfile=None, mplbackend="svg", fastmode=False):
+        matplotlib.use(mplbackend)
+        if fastmode:
+            mplstyle.use('fast')
+        else:
+            self.fig.tight_layout()
 
-    def display(self):
-        self.a_x.legend(**self.legend_options)
-        self.fig.tight_layout()
-        if self.outfile:
-            self.fig.savefig(self.outfile)
+        if outfile:
+            self.fig.savefig(outfile)
         else:
             self.plt.show()
         self.plt.close()
