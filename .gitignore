@@ -129,5 +129,6 @@ dmypy.json
 .pyre/
 
 # Outputs
+sample_output/
 *.png
 *.svg
